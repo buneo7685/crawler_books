@@ -1,0 +1,13 @@
+{'get_data_type_list' : {'img' : ['alt','src','title'] ,
+                      'a'   : ['innerHTML','href','text'] , 
+                      'div' : ['text'] , 
+                      'p'   : ['href','text'] , 
+                      'h1'  : ['text','innerHTML'],
+                      'h2'  : ['text','innerHTML'],
+                      'h3'  : ['text','innerHTML'],
+                      'h4'  : ['text','innerHTML'],
+                      'h5'  : ['text','innerHTML'],
+                      'h6'  : ['text','innerHTML'],
+                      'ui'  : ['text'],
+                      'li'  : ['text','class'],
+                      'span': ['text']}}
