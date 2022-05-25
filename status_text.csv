@@ -1,6 +1,0 @@
-{'Get_html_tags': {'status_text': '解析HTML只保留未被註解Tags'},
- 'Remain_body_tags' : {'status_text':'只保留HTML BODY內tag , 刪除不帶值的tag'},
- 'Get_page_xpath' : {'status_text':['進行第一次取得所有xpath','滑鼠歷遍未結尾xpath後的第二次取得xpath']},
- 'Get_more_data': {'status_text' : '滑鼠移至未結尾xpath以取得更多xpath'},
- 'Get_attributes' : {'status_text': '取得xpath下屬性或文字'},
- 'Insert_DB_correct' : {'status_text' : '將取得的屬性及文字寫入DB}}
