@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # Using Package
+
 # In[1]:
 
 
@@ -21,14 +23,14 @@ from selenium.webdriver.chrome.options import Options
 
 # # Get_html_tags
 
-# In[1]:
+# In[2]:
 
 
 def Get_html_tags(browser):
     '''Remain significant tags (not contains annotated tags)'''
     
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Get_html_tags']['status_text'])
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Get_html_tags']['status_text'])
         
     tag_pattern = r'<\w+[a-z\s>]|</[\w+]+?>'
     
@@ -52,8 +54,8 @@ def Get_html_tags(browser):
 
 def Remain_body_tags(page_full_tag , print_out = False):
     
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Remain_body_tags']['status_text'])
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Remain_body_tags']['status_text'])
     
     body_tag = []
     clean_body_tag = []
@@ -100,7 +102,7 @@ def Remain_body_tags(page_full_tag , print_out = False):
 
 # # Get_index
 
-# In[2]:
+# In[4]:
 
 
 def Get_index(xpath , idx_dict ):
@@ -126,7 +128,7 @@ def Get_index(xpath , idx_dict ):
 
 # # Determine_xpath_full_end
 
-# In[1]:
+# In[5]:
 
 
 def Determine_xpath_full_end(xpath , i , xpath_dict , idx_dict , print_out = False):
@@ -147,7 +149,7 @@ def Determine_xpath_full_end(xpath , i , xpath_dict , idx_dict , print_out = Fal
 
 # # Get_xpath_group
 
-# In[15]:
+# In[6]:
 
 
 def Get_xpath_group(xpath):
@@ -175,7 +177,7 @@ def Get_xpath_group(xpath):
 
 # # Get_page_xpath
 
-# In[18]:
+# In[25]:
 
 
 def Get_page_xpath(clean_body_tag , status_text:int , print_out = False):
@@ -183,8 +185,8 @@ def Get_page_xpath(clean_body_tag , status_text:int , print_out = False):
     '''cant contain below tags\r\n'link','br','p','pre','hr','b','i','u','sup','sub','font','tr','th','td','bgsound','embed','strong','em',
             'map','script','noscript','time','blockquote','area','button','input' '''
     
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Get_page_xpath']['status_text'][status_text])
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Get_page_xpath']['status_text'][status_text])
     
     xpath_dict = {}
     xpath = ''
@@ -197,8 +199,12 @@ def Get_page_xpath(clean_body_tag , status_text:int , print_out = False):
         
         # 情境一：Xpath起頭
         if xpath == '' :
-                       
+                                   
             xpath , idx_dict = Get_index(tag , idx_dict)
+            
+            if tag == 'img':
+                xpath += '|img'
+                xpath , xpath_dict , idx_dict = Determine_xpath_full_end(xpath , i , xpath_dict , idx_dict , print_out)
             
             if print_out :    
                 print("\033[1m{0}\033[0m Head Tag:【 {1:<8s}】 ,\tFull Xpath : {2}".format(i,tag,xpath))
@@ -266,6 +272,8 @@ def Get_page_xpath(clean_body_tag , status_text:int , print_out = False):
                 if xpath == '':
   
                     xpath , idx_dict = Get_index(tag,idx_dict )
+                    if tag == 'img':
+                        xpath += '|img'
                     #xpath = '/' + xpath
                         
                     if print_out:
@@ -300,7 +308,7 @@ def Get_page_xpath(clean_body_tag , status_text:int , print_out = False):
 
 # # Get_more_data_for_homepage
 
-# In[21]:
+# In[12]:
 
 
 def Get_more_data_for_homepage(browser , xpath_list):
@@ -317,13 +325,13 @@ def Get_more_data_for_homepage(browser , xpath_list):
 
 # # Get_more_data
 
-# In[20]:
+# In[13]:
 
 
 def Get_more_data(browser , xpath_list):
-
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Get_more_data']['status_text'])
+    
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Get_more_data']['status_text'])
     
     
     get_data_xpath = []
@@ -350,30 +358,28 @@ def Get_more_data(browser , xpath_list):
 
 # # Get_attributes
 
-# In[16]:
+# In[14]:
 
 
 def Get_attributes(browser , xpath_list , get_data_type_list):
     
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Get_attributes']['status_text'])
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Get_attributes']['status_text'])
         
     correct_dict = {}
-    error_list = []    
+    error_dict = {}  
     
-    Is_img = lambda x : [x , x[:-4]] if x[-5:] == 'a/img' else [x]
-    Is_img_idx = lambda x : 'p' if x == 'img' else ''
+    Is_img_idx = lambda x : 'p' if x == 'img' else ('s' if x == 'span' else '')
     
     for i , tmp_xpath in enumerate(xpath_list,1):
-        xpaths = Is_img(tmp_xpath)
+        xpaths = Get_expand_xpath(tmp_xpath)
         
-        for xpath in xpaths:
+        for i_x , xpath in enumerate(xpaths):
             try :
                 
                 r = browser.find_element(by = 'xpath' , value = '/html/body/' + xpath )
                 data_type = re.match('(\w+)' , xpath.split('/')[-1]).group()
-                target_attr = get_data_type_list[data_type]
-                i_p = Is_img_idx(data_type)               
+                target_attr = get_data_type_list[data_type]                              
                 
                 for attr_i , _ in enumerate(target_attr):                                
                      
@@ -382,18 +388,19 @@ def Get_attributes(browser , xpath_list , get_data_type_list):
                     if len(xpaths) > 1 and data_type == 'a' and attr == 'innerHTML':
                         pass
                     else :
-                        correct_dict[f"{i}{i_p}-{attr_i+1}"] = {}
-                        correct_dict[f"{i}{i_p}-{attr_i+1}"]['xpath'] = xpath
-                        correct_dict[f"{i}{i_p}-{attr_i+1}"]['datatype'] = attr
-                        correct_dict[f"{i}{i_p}-{attr_i+1}"]['final_tag'] = data_type
+                        correct_dict[f"{i}-{i_x}-{attr_i+1}"] = {}
+                        correct_dict[f"{i}-{i_x}-{attr_i+1}"]['xpath'] = xpath
+                        correct_dict[f"{i}-{i_x}-{attr_i+1}"]['datatype'] = attr
+                        correct_dict[f"{i}-{i_x}-{attr_i+1}"]['final_tag'] = data_type
                         if attr == 'text' :
-                            correct_dict[f"{i}{i_p}-{attr_i+1}"]['value'] = r.text
+                            correct_dict[f"{i}-{i_x}-{attr_i+1}"]['value'] = r.text
                             
                         else :
-                            correct_dict[f"{i}{i_p}-{attr_i+1}"]['value'] = r.get_attribute(f"{attr}")
+                            correct_dict[f"{i}-{i_x}-{attr_i+1}"]['value'] = r.get_attribute(f"{attr}")
                                          
             except :
-                error_list.append(xpath)
+                error_dict[i] = {}
+                error_dict[i]['xpath'] = tmp_xpath
     
     insert_time = datetime.datetime.now().strftime('%Y%m%d%H00')
     
@@ -403,26 +410,55 @@ def Get_attributes(browser , xpath_list , get_data_type_list):
         correct_dict[k]['group_lv2'] = group_lv2
         correct_dict[k]['sub_xpath'] = sub_xpath
         correct_dict[k]['insert_time'] = insert_time
-
-    return correct_dict , error_list
-
-
-# # Insert_DB_correct
-
-# In[12]:
-
-
-def Insert_DB_correct(session , table_name , table_param_dict , insert_dict):
     
-    with open('/home/buneoliou/Crawler/Project_Books/status_text.csv','r') as f:
-        print(eval(f.read())['Insert_DB_correct']['status_text'])
+    current_url = browser.current_url
+    
+    for k in error_dict.keys():
+        error_dict[k]['insert_time'] = insert_time
+        error_dict[k]['url'] = current_url
+
+    return correct_dict , error_dict
+
+
+# # Get_expand_xpath
+
+# In[15]:
+
+
+def Get_expand_xpath(xpath):
+    
+    expand_condition = [['a','img'],['a','span']]
+    
+    pure_xpath = []
+    expand_xpath = [xpath]
+    
+    xpath_split = xpath.split('/')
+    for tag in xpath_split:
+        pure_xpath.append(re.match('\w+',tag).group())
+    
+    if len(pure_xpath) >2 :
+        if [pure_xpath[-2],pure_xpath[-1]] in expand_condition :
+            expand_xpath.append(xpath[:-len(xpath_split[-1])-1])
+            
+    return expand_xpath
+
+
+# # Insert_DB
+
+# In[16]:
+
+
+def Insert_DB(session , table_name , table_param_dict , insert_dict : dict):
+    
+    with open('/home/buneoliou/Crawler/Project_Books/parameters.csv','r') as f:
+        print(eval(f.read())['function_text']['Insert_DB'][table_name]['status_text'])
         
     columns = table_param_dict[table_name]['columns']    
     values_cql = lambda x : 'values (%s' + ',%s'*(len(x.split(','))-1) + ')' if len(x.split(',')) > 1 else 'values (%s)'
     insert_cql = f'INSERT INTO {table_name} ({columns}) {values_cql(columns)}'
     
     for k in insert_dict.keys():        
-        #print([ insert_dict[k][c] for c in columns.replace(' ','').split(',') ])
+        #print([ indsert_dict[k][c] for c in columns.replace(' ','').split(',') ])
         try:
             session.execute(insert_cql , [ insert_dict[k][c] for c in columns.replace(' ','').split(',') ])
         
