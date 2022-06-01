@@ -358,7 +358,7 @@ def Get_more_data(browser , xpath_list):
 
 # # Get_attributes
 
-# In[14]:
+# In[27]:
 
 
 def Get_attributes(browser , xpath_list , get_data_type_list):
@@ -367,19 +367,33 @@ def Get_attributes(browser , xpath_list , get_data_type_list):
         print(eval(f.read())['function_text']['Get_attributes']['status_text'])
         
     correct_dict = {}
-    error_dict = {}  
+    error_dict = {}
+    check_list = []
+    duplicate_list = []
     
     Is_img_idx = lambda x : 'p' if x == 'img' else ('s' if x == 'span' else '')
     
     for i , tmp_xpath in enumerate(xpath_list,1):
         xpaths = Get_expand_xpath(tmp_xpath)
         
-        for i_x , xpath in enumerate(xpaths):
-            try :
-                
+        for i_x , xpath in enumerate(xpaths):            
+            
+            try :                
                 r = browser.find_element(by = 'xpath' , value = '/html/body/' + xpath )
                 data_type = re.match('(\w+)' , xpath.split('/')[-1]).group()
-                target_attr = get_data_type_list[data_type]                              
+                target_attr = get_data_type_list[data_type]
+                
+                if xpath not in check_list :
+                    check_list.append(xpath)
+                    
+                else :
+                    if len(xpaths) > 1 and data_type == 'a':
+                        
+                        for _ in range(len(target_attr)-1):
+                            duplicate_list.append(xpath)
+                    else :        
+                        for _  in target_attr :                        
+                            duplicate_list.append(xpath)
                 
                 for attr_i , _ in enumerate(target_attr):                                
                      
@@ -416,8 +430,10 @@ def Get_attributes(browser , xpath_list , get_data_type_list):
     for k in error_dict.keys():
         error_dict[k]['insert_time'] = insert_time
         error_dict[k]['url'] = current_url
+        
+    print(f'{len(duplicate_list)} duplicate datas')
 
-    return correct_dict , error_dict
+    return correct_dict , error_dict 
 
 
 # # Get_expand_xpath
@@ -459,18 +475,8 @@ def Insert_DB(session , table_name , table_param_dict , insert_dict : dict):
     
     for k in insert_dict.keys():        
         #print([ indsert_dict[k][c] for c in columns.replace(' ','').split(',') ])
-        try:
-            session.execute(insert_cql , [ insert_dict[k][c] for c in columns.replace(' ','').split(',') ])
-        
-        except Error as e:
-            print(e)
+        session.execute(insert_cql , [ insert_dict[k][c] for c in columns.replace(' ','').split(',') ])
         
     cql_amt = session.execute("select count(*) from {0} where insert_time = '{1}' allow filtering".format(table_name , insert_dict[k]['insert_time'] )).one()['count']
-    
-    if len(insert_dict.keys()) != cql_amt:
-        
-        print("DB insert data amounts is different with real data amounts ")            
-        
-    else :
-        print('Home page {0} Data Inserted {1} amounts'.format(insert_dict[k]['insert_time'] , cql_amt))
+    print('Home page {0} Data Inserted {1} amounts'.format(insert_dict[k]['insert_time'] , cql_amt))
 
