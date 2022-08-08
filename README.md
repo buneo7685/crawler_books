@@ -3,16 +3,16 @@
 > __腳本__ : 
 > - Script_Homepage.py
 > - ETL_Pivot_Homepage.py
->
+
 > __程式__ : 
 > - Crawler/utils.py (爬蟲階段function)
 > - Crawler/ETL_utils.py (ETL階段function)
->
+
 > __資料__ : 
 > - origin_data_202207142000.csv (爬蟲結果原始資料)
 > - ETL_result/home_page_main_df.csv (經邏輯處理的觀察資料Group_main)
 > - ETL_result/home_page_sub_df.csv (經邏輯處理的觀察資料Group_sub)
->
+
 > __參數檔__ : 
 > - target_schema/group_mapping.csv (ETL時各網頁的群組分類)
 > - parameters.csv (爬蟲時的相關設定)
