@@ -76,4 +76,4 @@
 >>
 >> __table_param_dict__ : 以pattern方式尋找符合的url下會依參數設定取得`table name , table columns (含xpath取不到的log table)`
 >>
->> __剩餘參數__ : 為各function執行時各情境下打印文字
+>> __剩餘參數__ : 各function執行時各情境下打印文字
