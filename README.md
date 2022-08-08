@@ -1,5 +1,24 @@
 # 博客來首頁爬蟲
-## 程式說明 
+
+> __腳本__ : 
+> - Script_Homepage.py
+> - ETL_Pivot_Homepage.py
+>
+> __程式__ : 
+> - Crawler/utils.py (爬蟲階段function)
+> - Crawler/ETL_utils.py (ETL階段function)
+>
+> __資料__ : 
+> - origin_data_202207142000.csv (爬蟲結果原始資料)
+> - ETL_result/home_page_main_df.csv (經邏輯處理的觀察資料Group_main)
+> - ETL_result/home_page_sub_df.csv (經邏輯處理的觀察資料Group_sub)
+>
+> __參數檔__ : 
+> - target_schema/group_mapping.csv (ETL時各網頁的群組分類)
+> - parameters.csv (爬蟲時的相關設定)
+
+
+## 腳本說明 
 >### Script_Homepage.py :
 > 整理HTML BODY下所有XPATH，並找出 __['div','li','ui','span']__ 結尾的xpath，再以腳本使滑鼠移至element位置取得更多資料及指定xpath，最後將完整body xpath寫入cassandra
 >
@@ -21,7 +40,7 @@
 > |202207142000|div[4]/div/div[8]/div/ul/li[7]/div|text                    |div[4]/div/div[8]/div|div[4]/div/div[8]/div/ul                                  |/li[7]/div|字我訂造展    |
 
 
-> ### ETL_Pivot_Homepage :
+> ### ETL_Pivot_Homepage.py :
 > 以整體彈性部份客製方式(無論新增多少活動組別，透過程式邏輯會分類至同組，出現新組別會寫入指定table並提示新組別未被給予分類名稱)，並將text值回推至群組名稱，產出Pivot Table
 >
 > __經ETL處理後__
