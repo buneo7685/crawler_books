@@ -20,7 +20,7 @@
 
 ## 腳本說明 
 >### Script_Homepage.py :
-> 整理HTML BODY下所有XPATH，並找出 __['div','li','ui','span']__ 結尾的xpath，再以腳本使滑鼠移至element位置取得更多資料及指定xpath，最後將完整body xpath寫入cassandra
+> 整理HTML BODY下所有XPATH，並找出 __['div','li','ui','span']__ 結尾的xpath，再以腳本使滑鼠移至element位置或指定xpath取得更多資料，最後將完整body xpath寫入cassandra
 >
 > __原始資料 (指定群組)__
 >
